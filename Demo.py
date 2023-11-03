@@ -101,10 +101,10 @@ def select_code_page():
 # Display the two pages
 page = st.sidebar.selectbox(
     "Select Page",
-    ("Fertilizer Consumption", "Fertilizer Predication")
+    ("Fertilizer Consumption", "Fertilizer Prediction")
 )
 
-if page == "Fertilizer Predication":
+if page == "Fertilizer Prediction":
     select_code_page()
 else:
     consumption_page()
