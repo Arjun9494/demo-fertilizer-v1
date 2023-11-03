@@ -27,13 +27,13 @@ else:
 @st.cache_data()
 def load_data():
     # Load prediction data
-    query = "SELECT CODE FROM STREAMLIT_APPS.PREDICATION.CONSUMPTION GROUP BY CODE"
-    prediction_data = session.table("STREAMLIT_APPS.PREDICATION.CONSUMPTION").collect()
+    query = "SELECT CODE FROM DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION GROUP BY CODE"
+    prediction_data = session.table("DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION").collect()
     prediction_df = pd.DataFrame(prediction_data)
     return prediction_df
 
 def load_codes():
-    query = "SELECT DISTINCT CODE FROM STREAMLIT_APPS.PREDICATION.CONSUMPTION"
+    query = "SELECT DISTINCT CODE FROM DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION"
     codes_data = session.sql(query).collect()
     codes_df = pd.DataFrame(codes_data)
     return codes_df
@@ -45,7 +45,7 @@ def consumption_page():
 
     selected_countries = st.multiselect('Select Countries', available_countries, default=available_countries[:4])  # Default first 4 countries
 
-    selected_year = st.slider('Select Year', min_value=1970, max_value=2019, value=2019, step=1)
+    selected_year = st.slider('Select Year', min_value=2008, max_value=2023, value=2023, step=1)
 
     st.markdown("___")
 
@@ -80,7 +80,7 @@ def select_code_page():
 
     selected_code = st.selectbox("Select CODE", available_codes)
 
-    selected_year = st.slider('Select Year', min_value=1970, max_value=2019, value=2019, step=1)
+    selected_year = st.slider('Select Year', min_value=2004, max_value=2024, value=2019, step=1)
 
     # Load data for the selected code
     df_predicationdata = load_data()
