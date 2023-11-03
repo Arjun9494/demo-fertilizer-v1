@@ -27,13 +27,13 @@ else:
 @st.cache_data()
 def load_data():
     # Load prediction data
-    query = "SELECT CODE FROM DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION GROUP BY CODE"
+    query = "SELECT ENTITY FROM DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION GROUP BY CODE"
     prediction_data = session.table("DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION").collect()
     prediction_df = pd.DataFrame(prediction_data)
     return prediction_df
 
 def load_codes():
-    query = "SELECT DISTINCT CODE FROM DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION"
+    query = "SELECT DISTINCT ENTITY FROM DB_DEV_DEMO.GOLD.VW_FERTILIZER_CONSUMPTION_PREDICTION"
     codes_data = session.sql(query).collect()
     codes_df = pd.DataFrame(codes_data)
     return codes_df
@@ -41,7 +41,7 @@ def load_codes():
 def consumption_page():
     st.subheader('Fertilizer Consumption')
     unique_codes = load_codes()
-    available_countries = unique_codes['CODE'].tolist()
+    available_countries = unique_codes['ENTITY'].tolist()
 
     selected_countries = st.multiselect('Select Countries', available_countries, default=available_countries[:4])  # Default first 4 countries
 
@@ -56,7 +56,7 @@ def consumption_page():
     df_predicationdata['YEAR'] = pd.to_datetime(df_predicationdata['YEAR']).dt.year
 
     # Filter data based on selected year
-    df_predicationdata_filtered = df_predicationdata[df_predicationdata['CODE'].isin(selected_countries) & (df_predicationdata['YEAR'] <= selected_year)]
+    df_predicationdata_filtered = df_predicationdata[df_predicationdata['ENTITY'].isin(selected_countries) & (df_predicationdata['YEAR'] <= selected_year)]
 
     #st.write(df_predicationdata_filtered)
     
@@ -66,8 +66,8 @@ def consumption_page():
             line_chart = alt.Chart(df_predicationdata_filtered).mark_line(color="lightblue", point=alt.OverlayMarkDef(color="red")).encode(
                 x='YEAR',
                 y='FERTILIZER_QUANTITY',
-                color='CODE',
-                tooltip=['CODE', 'YEAR', 'FERTILIZER_QUANTITY']
+                color='ENTITY',
+                tooltip=['ENTITY', 'YEAR', 'FERTILIZER_QUANTITY']
             )
             st.altair_chart(line_chart, use_container_width=True)
     else:
@@ -76,7 +76,7 @@ def consumption_page():
 def select_code_page():
     st.header('Fertilizer Quantity and Prediction Line Chart')
     unique_codes = load_codes()
-    available_codes = unique_codes['CODE'].tolist()
+    available_codes = unique_codes['ENTITY'].tolist()
 
     selected_code = st.selectbox("Select CODE", available_codes)
 
@@ -89,12 +89,12 @@ def select_code_page():
     df_predicationdata['YEAR'] = pd.to_datetime(df_predicationdata['YEAR'])
     df_predicationdata['YEAR'] =df_predicationdata['YEAR'].apply(lambda x:x.year)
 
-    df_filtered = df_predicationdata[(df_predicationdata['CODE'] == selected_code) & (df_predicationdata['YEAR'] <= selected_year)]
-   
+    df_filtered = df_predicationdata[(df_predicationdata['ENTITY'] == selected_code) & (df_predicationdata['YEAR'] <= selected_year)]
+        
  
-    if 'FERTILIZER_QUANTITY' in df_filtered.columns and 'PRED_QUANTITY' in df_filtered.columns:
+    if 'FERTILIZER_QUANTITY' in df_filtered.columns and 'CONSUMPTION_PREDICTION' in df_filtered.columns:
         st.title(f'Fertilizer Quantity and Prediction Line Chart for {selected_code}')
-        st.line_chart(df_filtered[['YEAR', 'FERTILIZER_QUANTITY', 'PRED_QUANTITY']].set_index('YEAR'))
+        st.line_chart(df_filtered[['YEAR', 'FERTILIZER_QUANTITY', 'CONSUMPTION_PREDICTION']].set_index('YEAR'))
     else:
         st.write("Required columns not present in the data.")
 
