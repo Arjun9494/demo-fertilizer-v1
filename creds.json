@@ -1,9 +1,8 @@
-{
-    "account": "KFSPMTD-WUB03433",
-    "user": "ARJUNA9",
-    "password": "Arjun1234",
+  {
+    "account": "UHQGVJN-TW70022",
+    "user": "DAKSHAK",
+    "password": "Pratheeksha@123",
     "warehouse": "COMPUTE_WH",
-    "database": "STREAMLIT_APPS",
-    "schema": "PREDICATION"
-  }
-  
+    "database": "DB_DEV_DEMO",
+    "schema": "GOLD"
+   }
